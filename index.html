@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notizen Web-App</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  #noteContainer {
+    background-color: #007bff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 500px; /* Breite erhöht */
+    color: white;
+  }
+
+  #noteInput {
+    width: 100%;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 10px;
+    color: white;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+
+  #addNoteButton {
+    background-color: white;
+    color: #007bff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  #notesList {
+    margin-top: 15px;
+  }
+
+  .note {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    word-break: break-all;
+    font-size: 18px;
+  }
+</style>
+</head>
+<body>
+<div id="noteContainer">
+  <h2>Notizen</h2>
+  <input type="text" id="noteInput" placeholder="Notiz eingeben">
+  <button id="addNoteButton">Hinzufügen</button>
+  <div id="notesList"></div>
+</div>
+
+<script>
+  const noteInput = document.getElementById("noteInput");
+  const addNoteButton = document.getElementById("addNoteButton");
+  const notesList = document.getElementById("notesList");
+
+  addNoteButton.addEventListener("click", () => {
+    const noteText = noteInput.value.trim();
+    if (noteText !== "") {
+      const noteElement = document.createElement("div");
+      noteElement.classList.add("note");
+      noteElement.textContent = noteText;
+      notesList.appendChild(noteElement);
+      noteInput.value = "";
+    }
+  });
+</script>
+</body>
+</html>
