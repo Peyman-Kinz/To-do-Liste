@@ -1,88 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Notizen Web-App</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-
-  #noteContainer {
-    background-color: #007bff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    width: 500px; /* Breite erhöht */
-    color: white;
-  }
-
-  #noteInput {
-    width: 100%;
-    border: none;
-    background-color: rgba(255, 255, 255, 0.2);
-    padding: 10px;
-    color: white;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    font-size: 16px;
-  }
-
-  #addNoteButton {
-    background-color: white;
-    color: #007bff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-
-  #notesList {
-    margin-top: 15px;
-  }
-
-  .note {
-    background-color: rgba(255, 255, 255, 0.2);
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 5px;
-    word-break: break-all;
-    font-size: 18px;
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <title>Notiz-Web-App</title>
 </head>
 <body>
-<div id="noteContainer">
-  <h2>Notizen</h2>
-  <input type="text" id="noteInput" placeholder="Notiz eingeben">
-  <button id="addNoteButton">Hinzufügen</button>
-  <div id="notesList"></div>
-</div>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+        <header class="mdl-layout__header">
+            <div class="mdl-layout__header-row">
+                <span class="mdl-layout-title">Notiz-Web-App</span>
+            </div>
+        </header>
+        <main class="mdl-layout__content">
+            <div class="mdl-card mdl-shadow--6dp note-card">
+                <div class="mdl-card__title">
+                    <h2 class="mdl-card__title-text">Notizen</h2>
+                </div>
+                <div class="mdl-card__supporting-text">
+                    <div class="note-editor">
+                        <textarea id="noteInput" class="mdl-textfield__input" rows="4"></textarea>
+                        <button id="saveButton" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                            Speichern
+                        </button>
+                    </div>
+                    <ul id="noteList" class="mdl-list"></ul>
+                </div>
+            </div>
+        </main>
+    </div>
 
-<script>
-  const noteInput = document.getElementById("noteInput");
-  const addNoteButton = document.getElementById("addNoteButton");
-  const notesList = document.getElementById("notesList");
+    <script>
+        const noteInput = document.getElementById('noteInput');
+        const saveButton = document.getElementById('saveButton');
+        const noteList = document.getElementById('noteList');
 
-  addNoteButton.addEventListener("click", () => {
-    const noteText = noteInput.value.trim();
-    if (noteText !== "") {
-      const noteElement = document.createElement("div");
-      noteElement.classList.add("note");
-      noteElement.textContent = noteText;
-      notesList.appendChild(noteElement);
-      noteInput.value = "";
-    }
-  });
-</script>
+        saveButton.addEventListener('click', () => {
+            const noteText = noteInput.value.trim();
+            if (noteText !== '') {
+                const listItem = document.createElement('li');
+                listItem.className = 'mdl-list__item';
+
+                const noteContent = document.createElement('span');
+                noteContent.textContent = noteText;
+                noteContent.className = 'note-content';
+                listItem.appendChild(noteContent);
+
+                const editButton = document.createElement('button');
+                editButton.textContent = 'Bearbeiten';
+                editButton.className = 'mdl-button mdl-js-button mdl-button--accent edit-button';
+                editButton.addEventListener('click', () => {
+                    const editedText = prompt('Notiz bearbeiten:', noteText);
+                    if (editedText !== null) {
+                        noteContent.textContent = editedText;
+                    }
+                });
+                listItem.appendChild(editButton);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Löschen';
+                deleteButton.className = 'mdl-button mdl-js-button mdl-button--accent delete-button';
+                deleteButton.addEventListener('click', () => {
+                    noteList.removeChild(listItem);
+                });
+                listItem.appendChild(deleteButton);
+
+                noteList.appendChild(listItem);
+                noteInput.value = '';
+            }
+        });
+    </script>
+
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .note-card {
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+            background-color: white;
+        }
+        .note-editor {
+            display: flex;
+            align-items: flex-end;
+            margin-bottom: 20px;
+        }
+        .mdl-layout__content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #noteList {
+            padding-left: 0;
+        }
+        .mdl-list__item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+        }
+        .note-content {
+            flex: 1;
+        }
+    </style>
 </body>
 </html>
