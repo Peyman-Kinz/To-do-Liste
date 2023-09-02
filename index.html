@@ -1,116 +1,154 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
-    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-    <title>Notiz-Web-App</title>
-</head>
-<body>
-    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-        <header class="mdl-layout__header">
-            <div class="mdl-layout__header-row">
-                <span class="mdl-layout-title">Notiz-Web-App</span>
-            </div>
-        </header>
-        <main class="mdl-layout__content">
-            <div class="mdl-card mdl-shadow--6dp note-card">
-                <div class="mdl-card__title">
-                    <h2 class="mdl-card__title-text">Notizen</h2>
-                </div>
-                <div class="mdl-card__supporting-text">
-                    <div class="note-editor">
-                        <textarea id="noteInput" class="mdl-textfield__input" rows="4"></textarea>
-                        <button id="saveButton" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
-                            Speichern
-                        </button>
-                    </div>
-                    <ul id="noteList" class="mdl-list"></ul>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <script>
-        const noteInput = document.getElementById('noteInput');
-        const saveButton = document.getElementById('saveButton');
-        const noteList = document.getElementById('noteList');
-
-        saveButton.addEventListener('click', () => {
-            const noteText = noteInput.value.trim();
-            if (noteText !== '') {
-                const listItem = document.createElement('li');
-                listItem.className = 'mdl-list__item';
-
-                const noteContent = document.createElement('span');
-                noteContent.textContent = noteText;
-                noteContent.className = 'note-content';
-                listItem.appendChild(noteContent);
-
-                const editButton = document.createElement('button');
-                editButton.textContent = 'Bearbeiten';
-                editButton.className = 'mdl-button mdl-js-button mdl-button--accent edit-button';
-                editButton.addEventListener('click', () => {
-                    const editedText = prompt('Notiz bearbeiten:', noteText);
-                    if (editedText !== null) {
-                        noteContent.textContent = editedText;
-                    }
-                });
-                listItem.appendChild(editButton);
-
-                const deleteButton = document.createElement('button');
-                deleteButton.textContent = 'Löschen';
-                deleteButton.className = 'mdl-button mdl-js-button mdl-button--accent delete-button';
-                deleteButton.addEventListener('click', () => {
-                    noteList.removeChild(listItem);
-                });
-                listItem.appendChild(deleteButton);
-
-                noteList.appendChild(listItem);
-                noteInput.value = '';
-            }
-        });
-    </script>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desktop To-Do-Liste</title>
     <style>
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+            font-family: 'Roboto', sans-serif;
             background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
         }
-        .note-card {
-            width: 100%;
+
+        .app {
             max-width: 600px;
-            margin: auto;
-            background-color: white;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
-        .note-editor {
+
+        header {
+            background-color: #0070ff;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        .input-container {
             display: flex;
-            align-items: flex-end;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
-        .mdl-layout__content {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px 0 0 5px;
         }
-        #noteList {
-            padding-left: 0;
+
+        button {
+            background-color: #0070ff;
+            color: #fff;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            padding: 10px 20px;
+            cursor: pointer;
         }
-        .mdl-list__item {
+
+        .save-button {
+            background-color: #4caf50;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 5px;
             padding: 10px;
+            margin-bottom: 5px;
         }
-        .note-content {
-            flex: 1;
+
+        li:last-child {
+            margin-bottom: 0;
+        }
+
+        li .delete-button {
+            background-color: #ff3b30;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
         }
     </style>
+</head>
+<body>
+    <div class="app">
+        <header>
+            <h1>To-Do-Liste</h1>
+        </header>
+        <main>
+            <div class="input-container">
+                <input type="text" id="taskInput" placeholder="Neue Aufgabe hinzufügen...">
+                <button id="addTaskButton">Hinzufügen</button>
+                <button class="save-button" id="saveTasksButton">Speichern</button>
+            </div>
+            <ul id="taskList">
+            </ul>
+        </main>
+    </div>
+    <script>
+        const taskInput = document.getElementById('taskInput');
+        const addTaskButton = document.getElementById('addTaskButton');
+        const saveTasksButton = document.getElementById('saveTasksButton');
+        const taskList = document.getElementById('taskList');
+
+        // Laden gespeicherter Aufgaben
+        window.addEventListener('load', () => {
+            const savedTasks = localStorage.getItem('tasks');
+            if (savedTasks) {
+                const tasks = JSON.parse(savedTasks);
+                tasks.forEach(task => {
+                    createTaskElement(task);
+                });
+            }
+        });
+
+        addTaskButton.addEventListener('click', () => {
+            const taskText = taskInput.value.trim();
+
+            if (taskText !== '') {
+                createTaskElement(taskText);
+                taskInput.value = '';
+            }
+        });
+
+        saveTasksButton.addEventListener('click', () => {
+            const tasks = Array.from(taskList.children).map(li => li.textContent.trim());
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            alert('Aufgaben wurden gespeichert.');
+        });
+
+        function createTaskElement(taskText) {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                ${taskText}
+                <button class="delete-button">Löschen</button>
+            `;
+            taskList.appendChild(li);
+
+            li.querySelector('.delete-button').addEventListener('click', () => {
+                li.remove();
+            });
+        }
+    </script>
 </body>
 </html>
